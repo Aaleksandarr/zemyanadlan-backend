@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: zemyanadlan-backend
+
+  profiles:
+    active: dev

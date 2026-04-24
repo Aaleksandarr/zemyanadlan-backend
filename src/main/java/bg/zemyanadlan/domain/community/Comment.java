@@ -1,4 +1,4 @@
-package bg.zemyanadlan.domain.forum;
+package bg.zemyanadlan.domain.community;
 
 import bg.zemyanadlan.user.User;
 
