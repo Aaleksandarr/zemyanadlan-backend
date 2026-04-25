@@ -3,4 +3,4 @@ spring:
     name: zemyanadlan-backend
 
   profiles:
-    active: dev
+    active: local
