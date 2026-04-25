@@ -1,6 +1,5 @@
 package bg.zemyanadlan.entities;
 
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,15 +11,24 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-@Table(name = "comments")
-public class Comment {
+@Table(name = "craft_listings")
+public class CraftListing {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "content")
-    private String content;
+    @Column(name = "title")
+    private String title;
+
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "price")
+    private double price;
+
+    @Column(name = "material")
+    private String material;
 
     @CreationTimestamp
     @Column(name = "created_at")
@@ -30,8 +38,7 @@ public class Comment {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "community_post_id")
-    private CommunityPost post;
+    @Column(name = "is_customizable")
+    private boolean isCustomizable;
 
 }
