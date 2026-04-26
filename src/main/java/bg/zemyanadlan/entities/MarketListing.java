@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,7 +28,7 @@ public class MarketListing {
     private String description;
 
     @Column(name = "price")
-    private double price;
+    private BigDecimal price;
 
     @Column(name = "unit")
     private String unit;

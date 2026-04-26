@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 
@@ -25,7 +26,7 @@ public class CraftListing {
     private String description;
 
     @Column(name = "price")
-    private double price;
+    private BigDecimal price;
 
     @Column(name = "material")
     private String material;
