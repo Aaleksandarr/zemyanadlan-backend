@@ -1,0 +1,15 @@
+spring:
+#  datasource:
+#    url: jdbc:oracle:thin:@//ORACLE_HOST:1521/ORACLE_SERVICE
+#    username: DEV_USER
+#    password: DEV_PASSWORD
+#    driver-class-name: oracle.jdbc.OracleDriver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database-platform: org.hibernate.dialect.OracleDialect
+
+  flyway:
+    enabled: false
+    locations: classpath:db/migration/oracle
