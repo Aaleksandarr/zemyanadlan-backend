@@ -22,7 +22,8 @@ public class PlaceListing {
     private String description;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "place_type")
+    @Column(name = "place_type",
+            columnDefinition = "varchar(50)")
     private PlaceType placeType;
 
     @Column(name = "address")

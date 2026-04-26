@@ -23,7 +23,10 @@ public class EventListing {
     private String description;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "event_type")
+    @Column(
+            name = "event_type",
+            columnDefinition = "varchar(50)"
+    )
     private EventType eventType;
 
     @Column(name = "address")

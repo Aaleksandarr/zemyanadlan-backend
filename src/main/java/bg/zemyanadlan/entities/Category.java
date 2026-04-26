@@ -22,7 +22,10 @@ public class Category {
     private String slug;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "category_scope")
+    @Column(
+            name = "category_scope",
+            columnDefinition = "varchar(50)"
+    )
     private CategoryScope categoryScope;
 
 
