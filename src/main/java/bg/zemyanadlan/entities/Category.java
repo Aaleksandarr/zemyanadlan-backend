@@ -2,11 +2,11 @@ package bg.zemyanadlan.entities;
 
 
 import jakarta.persistence.*;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
-@Getter
+@Data
 @Entity
 @Table(name = "categories")
 public class Category {
@@ -26,7 +26,5 @@ public class Category {
             name = "category_scope",
             columnDefinition = "varchar(50)"
     )
-    private CategoryScope categoryScope;
-
-
+    private CategoryScope scope;
 }

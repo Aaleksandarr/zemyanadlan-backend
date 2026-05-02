@@ -1,11 +1,10 @@
 # zemyanadlan-backend
 
-Java backend for **zemyanadlan.bg**.
+Spring Boot backend for **zemyanadlan.bg** platform.
 
-## Current state
-- Clean domain model
-- Service layer with pipelines
-- Core unit tests (JUnit 5 + Maven)
+This branch contains the initial setup of the project, including the basic structure and dependencies.
+Currently, it includes the following features:
+- Integration for **Categories**
 
 ## Next
-- Spring Boot integration
+- Implementation of the rest.

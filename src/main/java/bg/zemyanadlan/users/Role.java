@@ -1,4 +1,4 @@
-package bg.zemyanadlan.user;
+package bg.zemyanadlan.users;
 
 public enum Role {
     PRODUCER,
