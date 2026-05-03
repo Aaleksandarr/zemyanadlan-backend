@@ -25,6 +25,10 @@ public class CommunityPost {
     @Column(name = "content")
     private String content;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "post_type", columnDefinition = "varchar(255)")
+    private PostType postType;
+
     @CreationTimestamp
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -33,4 +37,8 @@ public class CommunityPost {
     @JoinColumn(name = "user_id")
     private User user;
 
+    private int likesCount;
+    private int commentsCount;
+    private int viewsCount;
+    private String thumbnailUrl;
 }
