@@ -35,6 +35,14 @@ public class EventListing {
     @Column(name = "city")
     private String city;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status",
+            columnDefinition = "varchar(20)")
+    private ListingStatus status;
+
+    @Column(name = "thumbnail_url")
+    private String thumbnailUrl;
+
     @CreationTimestamp
     @Column(name = "created_at")
     private LocalDateTime createdAt;

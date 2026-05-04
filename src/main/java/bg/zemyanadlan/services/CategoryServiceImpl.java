@@ -7,6 +7,8 @@ import bg.zemyanadlan.repositories.CategoryRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -41,5 +43,16 @@ public class CategoryServiceImpl implements CategoryService {
     public Category getCategoryBySlug(String slug) {
         return categoryRepository.findBySlug(slug)
                 .orElseThrow(() -> new ResourceNotFoundException("Category with the slug '" + slug + "' not found"));
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Set<Category> getCategoriesBySlugs(Set<String> slugs) {
+        if (slugs == null || slugs.isEmpty()) {
+            return Set.of();
+        }
+        return slugs.stream()
+                .map(this::getCategoryBySlug)
+                .collect(Collectors.toSet());
     }
 }
