@@ -10,8 +10,8 @@ The platform supports community posts and multiple listing domains (Market, Craf
 - **Community**: posts with comments and counters.
 - **MarketPlace listings**: products with categories, filters and pagination.
 - **Crafts listings**: crafts with categories, filters and pagination.
-- **Places listings**: to do 
-- **Events listings**: to do
+- **Places listings**: places with categories, filters and pagination.
+- **Events listings**: events with categories, filters and pagination.
 - **Categories**: centralized management of categories across all listing types.
 
 
