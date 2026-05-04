@@ -1,31 +1,29 @@
 package bg.zemyanadlan.mappers;
 
-import bg.zemyanadlan.dtos.CreateMarketListingRequestDto;
-import bg.zemyanadlan.dtos.MarketListingResponseDto;
+import bg.zemyanadlan.dtos.CreatePlaceListingRequestDto;
+import bg.zemyanadlan.dtos.PlaceListingResponseDto;
 import bg.zemyanadlan.entities.Category;
-import bg.zemyanadlan.entities.MarketListing;
+import bg.zemyanadlan.entities.PlaceListing;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
-public interface MarketListingMapper {
-
+public interface PlaceListingMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "user", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "user", ignore = true)
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "categories", ignore = true)
-    MarketListing toEntity(CreateMarketListingRequestDto dto);
-
+    PlaceListing toEntity(CreatePlaceListingRequestDto dto);
 
     @Mapping(target = "authorName", source = "user.username")
     @Mapping(target = "categories", expression = "java(mapCategories(listing.getCategories()))")
-    MarketListingResponseDto toResponseDto(MarketListing listing);
-
+    PlaceListingResponseDto toResponseDto(PlaceListing listing);
 
     default Set<String> mapCategories(Set<Category> categories) {
         if (categories == null) {
@@ -36,3 +34,5 @@ public interface MarketListingMapper {
                 .collect(Collectors.toSet());
     }
 }
+
+

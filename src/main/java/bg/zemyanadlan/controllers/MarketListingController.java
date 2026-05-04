@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Market", description = "Endpoints for managing market listings")
 @RestController
-@RequestMapping("/market-listings")
+@RequestMapping("/market")
 @AllArgsConstructor
 public class MarketListingController {
 
@@ -30,7 +30,7 @@ public class MarketListingController {
     private final UserService userService;
 
 
-    @Operation(summary = "Create a new market listing")
+    @Operation(summary = "Create a new market product")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public MarketListingResponseDto createMarketListing(
@@ -47,7 +47,7 @@ public class MarketListingController {
     }
 
 
-    @Operation(summary = "Get a market listing by ID")
+    @Operation(summary = "Get a market product by ID")
     @GetMapping("/{id}")
     public MarketListingResponseDto getMarketListingById(@PathVariable Long id) {
         MarketListing listing = marketListingService.getMarketListingById(id);
@@ -55,7 +55,7 @@ public class MarketListingController {
     }
 
 
-    @Operation(summary = "List market listings by category")
+    @Operation(summary = "List market products by category")
     @GetMapping
     public Page<MarketListingResponseDto> list(
             @RequestParam(required = false) String category,

@@ -22,14 +22,14 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Crafts", description = "Endpoints for managing craft listings")
 @RestController
-@RequestMapping("/craft-listings")
+@RequestMapping("/crafts")
 @AllArgsConstructor
 public class CraftListingController {
     private final CraftListingService craftListingService;
     private final UserService userService;
     private final CraftListingMapper craftListingMapper;
 
-    @Operation(summary = "Create a new craft listing")
+    @Operation(summary = "Create a new craft")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CraftListingResponseDto createCraftListing(
@@ -45,14 +45,14 @@ public class CraftListingController {
         return craftListingMapper.toResponseDto(savedListing);
     }
 
-    @Operation(summary = "Get a craft listing by ID")
+    @Operation(summary = "Get a craft by ID")
     @GetMapping("/{id}")
     public CraftListingResponseDto getCraftListingById(@PathVariable Long id) {
         CraftListing craftListing = craftListingService.getCraftListingById(id);
         return craftListingMapper.toResponseDto(craftListing);
     }
 
-    @Operation(summary = "List craft listings with optional category filter and pagination")
+    @Operation(summary = "List crafts with optional category filter")
     @GetMapping
     public Page<CraftListingResponseDto> list(
             @RequestParam(required = false) String category,
