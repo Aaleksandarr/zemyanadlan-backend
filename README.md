@@ -13,3 +13,6 @@ The platform supports community posts and multiple listing domains (Market, Craf
 - **Places listings**: to do 
 - **Events listings**: to do
 - **Categories**: centralized management of categories across all listing types.
+
+
+![Home page](src/main/resources/static/images/Home.pgn)
