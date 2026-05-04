@@ -15,4 +15,4 @@ The platform supports community posts and multiple listing domains (Market, Craf
 - **Categories**: centralized management of categories across all listing types.
 
 
-![Home page](src/main/resources/static/images/Home.pgn)
+![Home page](src/main/resources/static/images/Home.png)
