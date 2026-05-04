@@ -6,6 +6,7 @@ import bg.zemyanadlan.entities.Comment;
 import bg.zemyanadlan.entities.CommunityPost;
 import bg.zemyanadlan.entities.PostType;
 import bg.zemyanadlan.entities.User;
+import bg.zemyanadlan.exceptions.ResourceNotFoundException;
 import bg.zemyanadlan.mappers.CommunityPostMapper;
 import bg.zemyanadlan.repositories.CommentRepository;
 import bg.zemyanadlan.repositories.CommunityPostRepository;
@@ -41,7 +42,7 @@ public class CommunityPostService {
     @Transactional
     public CommunityPost getPostAndIncrementViews(Long postId){
         CommunityPost post = postRepository.findById(postId)
-                .orElseThrow(() -> new EntityNotFoundException("Post not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Post not found"));
         post.setViewsCount(post.getViewsCount() + 1);
         return post;
     }

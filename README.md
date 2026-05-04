@@ -1,14 +1,15 @@
 # zemyanadlan-backend
 
-Spring Boot backend for **zemyanadlan.bg** platform.
+Spring Boot backend for **zemyanadlan.bg** platform. 
 
-This branch contains the initial setup of the project, including the basic structure and dependencies.
-Currently, it includes the following features:
-- Integration of **Categories**
-- Integration of **Community**
 
-## Next
-- Implementation of the Listings(Market, Crafts, Places, Events).
-- Security and Authentication.
-- Integration of the frontend with the backend.
-- Deployment and testing.
+Zemyanadlan is a community-first platform that connects local producers, artisans, and communities.
+The platform supports community posts and multiple listing domains (Market, Crafts, Places, Events), providing a clean scalable backend API build with Spring Boot, JPA, and REST principles.
+
+## Key Features
+- **Community**: posts with comments and counters.
+- **MarketPlace listings**: products with categories, filters and pagination.
+- **Crafts listings**: crafts with categories, filters and pagination.
+- **Places listings**: to do 
+- **Events listings**: to do
+- **Categories**: centralized management of categories across all listing types.

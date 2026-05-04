@@ -7,6 +7,8 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Getter
@@ -42,11 +44,18 @@ public class CraftListing {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Column(name = "is_customizable")
+    private boolean isCustomizable;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "is_customizable")
-    private boolean isCustomizable;
-
+    @ManyToMany
+    @JoinTable(
+            name = "craft_listing_categories",
+            joinColumns = @JoinColumn(name = "listing_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private Set<Category> categories = new HashSet<>();
 }

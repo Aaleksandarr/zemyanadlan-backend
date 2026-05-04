@@ -36,4 +36,11 @@ public class GlobalExceptionHandler {
                 .orElse("Validation error");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", errorMessage));
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleGenericException(Exception exception) {
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "An unexpected error occurred"));
+    }
 }

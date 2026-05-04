@@ -1,9 +1,9 @@
 package bg.zemyanadlan.services;
 
-import bg.zemyanadlan.entities.Category;
 import bg.zemyanadlan.entities.ListingStatus;
 import bg.zemyanadlan.entities.MarketListing;
 import bg.zemyanadlan.entities.User;
+import bg.zemyanadlan.exceptions.ResourceNotFoundException;
 import bg.zemyanadlan.repositories.CategoryRepository;
 import bg.zemyanadlan.repositories.MarketListingRepository;
 
@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Service
@@ -33,6 +34,7 @@ public class MarketListingService {
     ) {
         marketListing.setUser(currentUser);
         marketListing.setStatus(ListingStatus.DRAFT);
+        marketListing.setCreatedAt(LocalDateTime.now());
         marketListing.setCategories(categoryService.getCategoriesBySlugs(categorySlugs));
         return marketListingRepository.save(marketListing);
     }
@@ -40,7 +42,7 @@ public class MarketListingService {
     @Transactional(readOnly = true)
     public MarketListing getMarketListingById(Long id) {
         return marketListingRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Market listing not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Market listing not found with id: " + id));
     }
 
     @Transactional(readOnly = true)
@@ -51,6 +53,14 @@ public class MarketListingService {
         return marketListingRepository.findAllByCategories_SlugOrderByCreatedAtDesc(categorySlug, pageable);
     }
 
-
-
+    @Transactional(readOnly = true)
+    public Page<MarketListing> listAll(
+            String categorySlug,
+            Pageable pageable
+    ) {
+        if(categorySlug == null || categorySlug.isBlank()){
+            return marketListingRepository.findAllByOrderByCreatedAtDesc(pageable);
+        }
+        return marketListingRepository.findAllByCategories_SlugOrderByCreatedAtDesc(categorySlug, pageable);
+    }
 }
