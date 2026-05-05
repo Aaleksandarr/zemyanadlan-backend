@@ -6,6 +6,7 @@ import bg.zemyanadlan.dtos.EventListingResponseDto;
 import bg.zemyanadlan.entities.EventListing;
 import bg.zemyanadlan.entities.User;
 import bg.zemyanadlan.mappers.EventListingMapper;
+import bg.zemyanadlan.repositories.UserRepository;
 import bg.zemyanadlan.services.EventListingService;
 import bg.zemyanadlan.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,6 +27,8 @@ public class EventListingController {
     private final EventListingService eventListingService;
     private final EventListingMapper eventListingMapper;
     private final UserService userService;
+    private final UserRepository userRepository;
+
 
     @Operation(summary = "Create a new event")
     @PostMapping
@@ -33,7 +36,8 @@ public class EventListingController {
     public EventListingResponseDto create(
             @Valid @RequestBody CreateEventListingRequestDto request
     ) {
-        User currentUser = userService.getCurrentUser();
+        User currentUser = userRepository.findTopByOrderByIdAsc()
+                .orElseThrow(() -> new RuntimeException("No users found in the database"));;
         EventListing listing = eventListingMapper.toEntity(request);
         EventListing saveListing = eventListingService.createEventListing(
                 listing,

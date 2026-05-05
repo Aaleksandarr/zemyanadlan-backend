@@ -6,6 +6,7 @@ import bg.zemyanadlan.dtos.PlaceListingResponseDto;
 import bg.zemyanadlan.entities.PlaceListing;
 import bg.zemyanadlan.entities.User;
 import bg.zemyanadlan.mappers.PlaceListingMapper;
+import bg.zemyanadlan.repositories.UserRepository;
 import bg.zemyanadlan.services.PlaceListingService;
 import bg.zemyanadlan.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,6 +27,7 @@ public class PlaceListingController {
     private final PlaceListingService placeListingService;
     private final PlaceListingMapper placeListingMapper;
     private final UserService userService;
+    private final UserRepository userRepository;
 
     @Operation(summary = "Create a new place")
     @PostMapping
@@ -33,7 +35,8 @@ public class PlaceListingController {
     public PlaceListingResponseDto createPlaceListing(
             @Valid @RequestBody CreatePlaceListingRequestDto request
             ) {
-        User currentUser = userService.getCurrentUser();
+        User currentUser = userRepository.findTopByOrderByIdAsc()
+                .orElseThrow(() -> new RuntimeException("No users found in the database"));;
         PlaceListing listing = placeListingMapper.toEntity(request);
         PlaceListing savedPlace = placeListingService.createPlaceListing(
                 listing,

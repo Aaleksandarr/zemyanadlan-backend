@@ -6,6 +6,7 @@ import bg.zemyanadlan.dtos.MarketListingResponseDto;
 import bg.zemyanadlan.entities.MarketListing;
 import bg.zemyanadlan.entities.User;
 import bg.zemyanadlan.mappers.MarketListingMapper;
+import bg.zemyanadlan.repositories.UserRepository;
 import bg.zemyanadlan.services.MarketListingService;
 import bg.zemyanadlan.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,7 +29,7 @@ public class MarketListingController {
     private final MarketListingService marketListingService;
     private final MarketListingMapper marketListingMapper;
     private final UserService userService;
-
+    private final UserRepository userRepository;
 
     @Operation(summary = "Create a new market product")
     @PostMapping
@@ -36,7 +37,8 @@ public class MarketListingController {
     public MarketListingResponseDto createMarketListing(
             @Valid @RequestBody CreateMarketListingRequestDto request
     ){
-        User currentUser = userService.getCurrentUser();
+        User currentUser = userRepository.findTopByOrderByIdAsc()
+                .orElseThrow(() -> new RuntimeException("No users found in the database"));;
         MarketListing listing = marketListingMapper.toEntity(request);
         MarketListing savedListing = marketListingService.createMarketListing(
                 listing,

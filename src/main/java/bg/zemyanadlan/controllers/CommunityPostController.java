@@ -7,6 +7,7 @@ import bg.zemyanadlan.entities.PostType;
 import bg.zemyanadlan.entities.User;
 import bg.zemyanadlan.mappers.CommentMapper;
 import bg.zemyanadlan.mappers.CommunityPostMapper;
+import bg.zemyanadlan.repositories.UserRepository;
 import bg.zemyanadlan.services.CommunityPostService;
 import bg.zemyanadlan.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,6 +37,7 @@ public class CommunityPostController {
     private final CommunityPostMapper communityPostMapper;
     private final CommentMapper commentMapper;
     private final UserService userService;
+    private final UserRepository userRepository;
 
 
     /**
@@ -92,7 +94,8 @@ public class CommunityPostController {
     public CommunityPostFeedDto createPost(
             @Valid @RequestBody CreateCommunityPostRequestDto request
     ){
-        User user = userService.getCurrentUser();
+        User user = userRepository.findTopByOrderByIdAsc()
+                .orElseThrow(() -> new RuntimeException("No users found in the database"));
         CommunityPost post = communityPostService.createPost(request, user);
         return communityPostMapper.toFeedDto(post);
     }
@@ -113,7 +116,8 @@ public class CommunityPostController {
             @PathVariable Long id,
             @Valid @RequestBody CreateCommentRequestDto request
     ){
-        User user = userService.getCurrentUser();
+        User user = userRepository.findTopByOrderByIdAsc()
+                .orElseThrow(() -> new RuntimeException("No users found in the database"));;
         Comment comment = communityPostService.addComment(
                 id,
                 request.getContent(),

@@ -6,6 +6,7 @@ import bg.zemyanadlan.dtos.CreateCraftListingRequestDto;
 import bg.zemyanadlan.entities.CraftListing;
 import bg.zemyanadlan.entities.User;
 import bg.zemyanadlan.mappers.CraftListingMapper;
+import bg.zemyanadlan.repositories.UserRepository;
 import bg.zemyanadlan.services.CraftListingService;
 import bg.zemyanadlan.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,6 +29,7 @@ public class CraftListingController {
     private final CraftListingService craftListingService;
     private final UserService userService;
     private final CraftListingMapper craftListingMapper;
+    private final UserRepository userRepository;
 
     @Operation(summary = "Create a new craft")
     @PostMapping
@@ -35,7 +37,8 @@ public class CraftListingController {
     public CraftListingResponseDto createCraftListing(
             @Valid @RequestBody CreateCraftListingRequestDto requestDto
             ) {
-        User currentUser = userService.getCurrentUser();
+        User currentUser = userRepository.findTopByOrderByIdAsc()
+                .orElseThrow(() -> new RuntimeException("No users found in the database"));;
         CraftListing craftListing = craftListingMapper.toEntity(requestDto);
         CraftListing savedListing = craftListingService.createCraftListing(
                 craftListing,
