@@ -11,6 +11,9 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Represents a market listing in the marketplace, including details like price, unit, and associated categories.
+ */
 @Getter
 @Setter
 @Entity
@@ -45,11 +48,16 @@ public class MarketListing {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-
+    /**
+     * The user who created the market listing.
+     */
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
+    /**
+     * The set of categories associated with this market listing.
+     */
     @ManyToMany
     @JoinTable(
             name = "market_listing_categories",

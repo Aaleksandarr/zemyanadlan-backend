@@ -22,6 +22,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller for managing community posts, comments, and discussions.
+ */
 @Tag(
         name = "Community",
         description = "Community posts, comments and discussions.")
@@ -35,6 +38,12 @@ public class CommunityPostController {
     private final UserService userService;
 
 
+    /**
+     * Retrieves the community feed with optional filtering by post type.
+     * @param postType optional filter by post type (RECIPE, TIP, STORY)
+     * @param pageable pagination information
+     * @return a page of community post feed DTOs
+     */
     @Operation(summary = "Get community feed with optional filtering by post type(RECIPE, TIP, STORY)")
     @GetMapping
     public Page<CommunityPostFeedDto> getCommunityFeed(
@@ -49,6 +58,11 @@ public class CommunityPostController {
     }
 
 
+    /**
+     * Retrieves the details of a community post along with its comments, incrementing the view count.
+     * @param id the post ID
+     * @return the community post details DTO
+     */
     @Operation(
             summary = "Get community post details",
             description = "Returns the details of a community post along with its comments. Increments the view count of the post.")
@@ -65,6 +79,11 @@ public class CommunityPostController {
     }
 
 
+    /**
+     * Creates a new community post.
+     * @param request the request DTO containing post details
+     * @return the created community post feed DTO
+     */
     @Operation(
             summary = "Create a new community post",
             description = "Creates a new community post of the specified type (RECIPE, TIP, STORY) with the provided content.")
@@ -78,6 +97,12 @@ public class CommunityPostController {
         return communityPostMapper.toFeedDto(post);
     }
 
+    /**
+     * Adds a comment to a community post.
+     * @param id the post ID
+     * @param request the request DTO containing comment content
+     * @return the created comment DTO
+     */
     @Operation(
             summary = "Add a comment to a community post",
             description = "Adds a new comment to the specified community post.")

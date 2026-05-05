@@ -10,7 +10,11 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-
+/**
+ * Represents a community post in the application, such as recipes, tips, or stories.
+ * This entity is mapped to the "community_posts" table and includes metadata like
+ * likes, comments, and views for engagement tracking.
+ */
 @Getter
 @Setter
 @Entity
@@ -34,10 +38,16 @@ public class CommunityPost {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    /**
+     * The user who authored the community post.
+     */
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
+    /**
+     * The set of categories associated with this post, allowing for many-to-many relationships.
+     */
     @ManyToMany
     @JoinTable(
             name = "post_categories",

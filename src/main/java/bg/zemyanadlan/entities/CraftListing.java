@@ -11,6 +11,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 
+/**
+ * Represents a craft listing in the marketplace, including details like price, material, and associated categories.
+ */
 @Getter
 @Setter
 @Entity
@@ -47,10 +50,16 @@ public class CraftListing {
     @Column(name = "is_customizable")
     private boolean isCustomizable;
 
+    /**
+     * The user who created the craft listing.
+     */
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
+    /**
+     * The set of categories associated with this craft listing.
+     */
     @ManyToMany
     @JoinTable(
             name = "craft_listing_categories",

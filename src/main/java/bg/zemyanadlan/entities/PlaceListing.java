@@ -9,6 +9,9 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Represents a place listing, including details like place type, contact info, and associated categories.
+ */
 @Setter
 @Getter
 @Entity
@@ -54,10 +57,16 @@ public class PlaceListing {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    /**
+     * The user who created the place listing.
+     */
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
+    /**
+     * The set of categories associated with this place listing.
+     */
     @ManyToMany
     @JoinTable(
             name = "place_listing_categories",

@@ -9,6 +9,9 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Represents an event listing, including details like event type, location, and associated categories.
+ */
 @Setter
 @Getter
 @Entity
@@ -53,10 +56,16 @@ public class EventListing {
     @Column(name = "starts_at")
     private LocalDateTime startsAt;
 
+    /**
+     * The user who created the event listing.
+     */
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
+    /**
+     * The set of categories associated with this event listing.
+     */
     @ManyToMany
     @JoinTable(
             name = "event_listing_categories",

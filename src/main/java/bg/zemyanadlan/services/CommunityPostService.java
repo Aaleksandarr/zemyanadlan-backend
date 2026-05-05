@@ -18,6 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Service class for managing community posts.
+ */
 @Service
 @AllArgsConstructor
 public class CommunityPostService {
@@ -26,6 +29,13 @@ public class CommunityPostService {
     private final CommunityPostMapper communityPostMapper;
     private final CategoryService categoryService;
 
+    /**
+     * Retrieves the community feed, optionally filtered by post type.
+     *
+     * @param postType the type of posts to retrieve (optional)
+     * @param pageable pagination information
+     * @return a page of community posts
+     */
     @Transactional(readOnly = true)
     public Page<CommunityPost> getCommunityFeed(
             PostType postType,
@@ -38,6 +48,12 @@ public class CommunityPostService {
         }
     }
 
+    /**
+     * Retrieves a post by its ID and increments its view count.
+     *
+     * @param postId the ID of the post to retrieve
+     * @return the retrieved post
+     */
     @Transactional
     public CommunityPost getPostAndIncrementViews(Long postId){
         CommunityPost post = postRepository.findById(postId)
@@ -46,11 +62,25 @@ public class CommunityPostService {
         return post;
     }
 
+    /**
+     * Retrieves the comments for a given post.
+     *
+     * @param post the post for which to retrieve comments
+     * @return a list of comments for the post
+     */
     @Transactional(readOnly = true)
     public List<Comment> getComments(CommunityPost post){
         return commentRepository.findByPostOrderByCreatedAtAsc(post);
     }
 
+    /**
+     * Adds a comment to a post.
+     *
+     * @param postId the ID of the post to which to add the comment
+     * @param content the content of the comment
+     * @param user the user adding the comment
+     * @return the added comment
+     */
     @Transactional
     public Comment addComment(
             Long postId,
@@ -71,6 +101,13 @@ public class CommunityPostService {
         return saved;
     }
 
+    /**
+     * Creates a new post.
+     *
+     * @param request the request object containing post details
+     * @param user the user creating the post
+     * @return the created post
+     */
     @Transactional
     public CommunityPost createPost(
           CreateCommunityPostRequestDto request,
