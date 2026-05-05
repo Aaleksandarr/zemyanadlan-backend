@@ -1,7 +1,7 @@
 package bg.zemyanadlan.entities;
 
 public enum CategoryScope {
-    POST,
+    COMMUNITY,
     MARKET,
     CRAFT,
     PLACE,
