@@ -16,6 +16,7 @@ public interface CraftListingMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "user", ignore = true)
+    @Mapping(target = "status", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "categories", ignore = true)
     CraftListing toEntity(CreateCraftListingRequestDto dto);

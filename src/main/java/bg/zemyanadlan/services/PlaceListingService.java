@@ -5,7 +5,6 @@ import bg.zemyanadlan.entities.ListingStatus;
 import bg.zemyanadlan.entities.PlaceListing;
 import bg.zemyanadlan.entities.User;
 import bg.zemyanadlan.exceptions.ResourceNotFoundException;
-import bg.zemyanadlan.mappers.PlaceListingMapper;
 import bg.zemyanadlan.repositories.PlaceListingRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;

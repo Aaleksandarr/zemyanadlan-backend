@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Set;
 
 @Data
@@ -13,7 +14,7 @@ public class CraftListingResponseDto {
     private Long id;
     private String title;
     private String description;
-    private Double price;
+    private BigDecimal price;
     private String material;
     private boolean isCustomizable;
     private String thumbnailUrl;

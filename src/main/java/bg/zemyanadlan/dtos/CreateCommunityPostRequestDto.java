@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.util.Set;
+
 @Data
 public class CreateCommunityPostRequestDto {
     @NotBlank
@@ -17,5 +19,8 @@ public class CreateCommunityPostRequestDto {
     private PostType postType;
 
     private String thumbnailUrl;
+
+    @NotNull
+    private Set<String> categorySlugs;
 
 }

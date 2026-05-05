@@ -5,7 +5,6 @@ import bg.zemyanadlan.entities.ListingStatus;
 import bg.zemyanadlan.entities.User;
 import bg.zemyanadlan.exceptions.ResourceNotFoundException;
 import bg.zemyanadlan.repositories.CraftListingRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

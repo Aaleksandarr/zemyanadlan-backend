@@ -5,12 +5,10 @@ import bg.zemyanadlan.entities.ListingStatus;
 import bg.zemyanadlan.entities.User;
 import bg.zemyanadlan.exceptions.ResourceNotFoundException;
 import bg.zemyanadlan.repositories.EventListingRepository;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.ReactiveTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -49,7 +47,7 @@ public class EventListingService {
         if (categorySlug == null || categorySlug.isBlank()) {
             return eventListingRepository.findAllByOrderByCreatedAtDesc(pageable);
         } else {
-            return eventListingRepository.findAllByCategories_slugOrderByCreatedAtDesc(categorySlug, pageable);
+            return eventListingRepository.findAllByCategories_SlugOrderByCreatedAtDesc(categorySlug, pageable);
         }
     }
 

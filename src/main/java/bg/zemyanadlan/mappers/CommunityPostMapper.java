@@ -27,5 +27,6 @@ public interface CommunityPostMapper {
     @Mapping(target = "viewsCount", ignore = true)
     @Mapping(target = "commentsCount", ignore = true)
     @Mapping(target = "likesCount", ignore = true)
+    @Mapping(target = "categories", ignore = true)
     CommunityPost toEntity(CreateCommunityPostRequestDto detailsDto);
 }

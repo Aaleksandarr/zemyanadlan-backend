@@ -7,7 +7,6 @@ import bg.zemyanadlan.exceptions.ResourceNotFoundException;
 import bg.zemyanadlan.repositories.CategoryRepository;
 import bg.zemyanadlan.repositories.MarketListingRepository;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.data.domain.Page;

@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Set;
 
 @Data
@@ -15,7 +16,7 @@ public class CreateCraftListingRequestDto {
     private String description;
 
     @PositiveOrZero
-    private Double price;
+    private BigDecimal price;
 
     @NotBlank
     private String material;

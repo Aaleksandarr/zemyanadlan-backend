@@ -1,6 +1,5 @@
 package bg.zemyanadlan.services;
 
-import bg.zemyanadlan.dtos.CreateCommentRequestDto;
 import bg.zemyanadlan.dtos.CreateCommunityPostRequestDto;
 import bg.zemyanadlan.entities.Comment;
 import bg.zemyanadlan.entities.CommunityPost;
@@ -10,7 +9,6 @@ import bg.zemyanadlan.exceptions.ResourceNotFoundException;
 import bg.zemyanadlan.mappers.CommunityPostMapper;
 import bg.zemyanadlan.repositories.CommentRepository;
 import bg.zemyanadlan.repositories.CommunityPostRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +24,7 @@ public class CommunityPostService {
     private final CommunityPostRepository postRepository;
     private final CommentRepository commentRepository;
     private final CommunityPostMapper communityPostMapper;
+    private final CategoryService categoryService;
 
     @Transactional(readOnly = true)
     public Page<CommunityPost> getCommunityFeed(
@@ -59,7 +58,7 @@ public class CommunityPostService {
             User user
     ){
         CommunityPost post = postRepository.findById(postId)
-                .orElseThrow(() -> new EntityNotFoundException("Post not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Post not found"));
         Comment comment = new Comment();
 
         comment.setContent(content);
@@ -84,7 +83,7 @@ public class CommunityPostService {
         post.setLikesCount(0);
         post.setCommentsCount(0);
         post.setViewsCount(0);
-
+        post.setCategories(categoryService.getCategoriesBySlugs(request.getCategorySlugs()));
         return postRepository.save(post);
     }
 }

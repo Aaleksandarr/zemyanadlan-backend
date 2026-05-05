@@ -7,6 +7,8 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Getter
@@ -26,7 +28,7 @@ public class CommunityPost {
     private String content;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "post_type", columnDefinition = "varchar(255)")
+    @Column(name = "post_type")
     private PostType postType;
 
     @CreationTimestamp
@@ -36,6 +38,13 @@ public class CommunityPost {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @ManyToMany
+    @JoinTable(
+            name = "post_categories",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id"))
+    private Set<Category> categories = new HashSet<>();
 
     private int likesCount;
     private int commentsCount;

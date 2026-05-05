@@ -11,5 +11,5 @@ public interface EventListingRepository extends JpaRepository<EventListing, Long
 
     Page<EventListing> findAllByUser_IdOrderByCreatedAtDesc(Long userId, Pageable pageable);
 
-    Page<EventListing> findAllByCategories_slugOrderByCreatedAtDesc(String slug, Pageable pageable);
+    Page<EventListing> findAllByCategories_SlugOrderByCreatedAtDesc(String slug, Pageable pageable);
 }
