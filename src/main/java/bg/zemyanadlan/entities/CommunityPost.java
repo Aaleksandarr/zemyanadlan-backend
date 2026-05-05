@@ -27,9 +27,8 @@ public class CommunityPost {
     @Column(name = "content")
     private String content;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "post_type")
-    private PostType postType;
+    @Column(name = "post_type", length = 20)
+    private String postType;
 
     @CreationTimestamp
     @Column(name = "created_at")

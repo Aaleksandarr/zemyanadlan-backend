@@ -80,6 +80,7 @@ public class CommunityPostService {
 
         post.setUser(user);
         post.setCreatedAt(LocalDateTime.now());
+        post.setPostType(request.getPostType().name());
         post.setLikesCount(0);
         post.setCommentsCount(0);
         post.setViewsCount(0);
