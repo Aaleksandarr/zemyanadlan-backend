@@ -10,7 +10,7 @@ public interface CommunityPostRepository extends JpaRepository<CommunityPost, Lo
     Page<CommunityPost> findAllByOrderByCreatedAtDesc(Pageable pageable);
 
     Page<CommunityPost> findByPostTypeOrderByCreatedAtDesc(
-            PostType postType,
+            String postType,
             Pageable pageable
     );
 }

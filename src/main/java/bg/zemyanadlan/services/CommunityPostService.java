@@ -44,7 +44,7 @@ public class CommunityPostService {
         if (postType == null){
             return postRepository.findAllByOrderByCreatedAtDesc(pageable);
         } else {
-            return postRepository.findByPostTypeOrderByCreatedAtDesc(postType, pageable);
+            return postRepository.findByPostTypeOrderByCreatedAtDesc(postType.name(), pageable);
         }
     }
 
