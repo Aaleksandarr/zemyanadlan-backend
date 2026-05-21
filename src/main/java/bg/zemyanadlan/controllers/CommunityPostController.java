@@ -100,6 +100,39 @@ public class CommunityPostController {
         return communityPostMapper.toFeedDto(post);
     }
 
+    @Operation(
+            summary = "Update a community post",
+            description = "Updates the content of an existing community post. " +
+                    "Only the author of the post can perform this action.")
+    @PutMapping("/{id}")
+    public CommunityPostFeedDto updatePost(
+            @Parameter(description = "Post ID")
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateCommunityPostRequestDto request
+    ){
+        User user = userRepository.findTopByOrderByIdAsc()
+                .orElseThrow(() -> new RuntimeException("No users found in the database"));;
+        CommunityPost updatedPost = communityPostService.updatePost(id, request, user);
+        return communityPostMapper.toFeedDto(updatedPost);
+    }
+
+
+    @Operation(
+            summary = "Delete a community post",
+            description = "Deletes an existing community post. Only the author of the post can perform this action.")
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+
+    public void deletePost(
+            @Parameter(description = "Post ID")
+            @PathVariable Long id
+    ){
+        User user = userRepository.findTopByOrderByIdAsc()
+                .orElseThrow(() -> new RuntimeException("No users found in the database"));;
+        communityPostService.deletePost(id, user);
+    }
+
+
     /**
      * Adds a comment to a community post.
      * @param id the post ID
@@ -126,4 +159,33 @@ public class CommunityPostController {
         return commentMapper.toDto(comment);
     }
 
+    @Operation(
+            summary = "Delete a comment",
+            description = "Deletes an existing comment. " +
+                    "Only the author of the comment can perform this action.")
+    @DeleteMapping("/comments/{Id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteComment(
+            @Parameter(description = "Comment ID")
+            @PathVariable Long Id
+    ){
+        User user = userRepository.findTopByOrderByIdAsc()
+                .orElseThrow(() -> new RuntimeException("No users found in the database"));
+        communityPostService.deleteComment(Id, user);
+    }
+
+    @Operation(
+            summary = "Update a comment",
+            description = "Updates the content of an existing comment. " +
+                    "Only the author of the comment can perform this action.")
+    @PutMapping("/comments/{id}")
+    public CommentDto updateComment(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateCommentRequestDto request
+    ) {
+        User user = userRepository.findTopByOrderByIdAsc()
+                .orElseThrow(() -> new RuntimeException("No users found in the database"));
+        Comment comment = communityPostService.updateComment(id, request.getContent(), user);
+        return commentMapper.toDto(comment);
+    }
 }

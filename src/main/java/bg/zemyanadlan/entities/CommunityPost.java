@@ -55,6 +55,14 @@ public class CommunityPost {
             inverseJoinColumns = @JoinColumn(name = "category_id"))
     private Set<Category> categories = new HashSet<>();
 
+
+    @OneToMany(
+            mappedBy = "post",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private Set<Comment> comments = new HashSet<>();
+
     private int likesCount;
     private int commentsCount;
     private int viewsCount;

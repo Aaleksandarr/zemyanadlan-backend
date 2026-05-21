@@ -1,10 +1,9 @@
 package bg.zemyanadlan.services;
 
 import bg.zemyanadlan.dtos.CreateCommunityPostRequestDto;
-import bg.zemyanadlan.entities.Comment;
-import bg.zemyanadlan.entities.CommunityPost;
-import bg.zemyanadlan.entities.PostType;
-import bg.zemyanadlan.entities.User;
+import bg.zemyanadlan.dtos.UpdateCommentRequestDto;
+import bg.zemyanadlan.dtos.UpdateCommunityPostRequestDto;
+import bg.zemyanadlan.entities.*;
 import bg.zemyanadlan.exceptions.ResourceNotFoundException;
 import bg.zemyanadlan.mappers.CommunityPostMapper;
 import bg.zemyanadlan.repositories.CommentRepository;
@@ -14,9 +13,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 
 /**
  * Service class for managing community posts.
@@ -29,6 +30,7 @@ public class CommunityPostService {
     private final CommunityPostMapper communityPostMapper;
     private final CategoryService categoryService;
 
+
     /**
      * Retrieves the community feed, optionally filtered by post type.
      *
@@ -40,8 +42,8 @@ public class CommunityPostService {
     public Page<CommunityPost> getCommunityFeed(
             PostType postType,
             Pageable pageable
-    ){
-        if (postType == null){
+    ) {
+        if (postType == null) {
             return postRepository.findAllByOrderByCreatedAtDesc(pageable);
         } else {
             return postRepository.findByPostTypeOrderByCreatedAtDesc(postType.name(), pageable);
@@ -55,7 +57,7 @@ public class CommunityPostService {
      * @return the retrieved post
      */
     @Transactional
-    public CommunityPost getPostAndIncrementViews(Long postId){
+    public CommunityPost getPostAndIncrementViews(Long postId) {
         CommunityPost post = postRepository.findById(postId)
                 .orElseThrow(() -> new ResourceNotFoundException("Post not found"));
         post.setViewsCount(post.getViewsCount() + 1);
@@ -63,22 +65,79 @@ public class CommunityPostService {
     }
 
     /**
-     * Retrieves the comments for a given post.
+     * Creates a new post.
      *
-     * @param post the post for which to retrieve comments
-     * @return a list of comments for the post
+     * @param request the request object containing post details
+     * @param user    the user creating the post
+     * @return the created post
      */
-    @Transactional(readOnly = true)
-    public List<Comment> getComments(CommunityPost post){
-        return commentRepository.findByPostOrderByCreatedAtAsc(post);
+    @Transactional
+    public CommunityPost createPost(
+            CreateCommunityPostRequestDto request,
+            User user
+    ) {
+        CommunityPost post = communityPostMapper.toEntity(request);
+
+        post.setUser(user);
+        post.setCreatedAt(LocalDateTime.now());
+        post.setPostType(request.getPostType().name());
+        post.setLikesCount(0);
+        post.setCommentsCount(0);
+        post.setViewsCount(0);
+        post.setCategories(categoryService.getCategoriesBySlugs(new java.util.HashSet<>(request.getCategorySlugs())));
+        return postRepository.save(post);
+    }
+
+    @Transactional
+    public CommunityPost updatePost(
+            Long postId,
+            UpdateCommunityPostRequestDto request,
+            User user
+    ) {
+        CommunityPost post = postRepository.findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundException("Post not found"));
+
+        if (!post.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("You are not authorized to update this post");
+        }
+
+        if (request.getTitle() != null) {
+            post.setTitle(request.getTitle());
+        }
+        if (request.getContent() != null) {
+            post.setContent(request.getContent());
+        }
+        if (request.getPostType() != null) {
+            post.setPostType(request.getPostType().name());
+        }
+        if (request.getCategorySlugs() != null) {
+            Set<Category> categories = categoryService.getCategoriesBySlugs(new HashSet<>(request.getCategorySlugs()));
+            post.setCategories(categories);
+        }
+        return post;
+    }
+
+    @Transactional
+    public void deletePost(
+            Long postId,
+            User user
+    ) {
+        CommunityPost post = postRepository.findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundException("Post not found"));
+
+        if (!post.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("You are not authorized to delete this post");
+        }
+
+        postRepository.delete(post);
     }
 
     /**
      * Adds a comment to a post.
      *
-     * @param postId the ID of the post to which to add the comment
+     * @param postId  the ID of the post to which to add the comment
      * @param content the content of the comment
-     * @param user the user adding the comment
+     * @param user    the user adding the comment
      * @return the added comment
      */
     @Transactional
@@ -86,7 +145,7 @@ public class CommunityPostService {
             Long postId,
             String content,
             User user
-    ){
+    ) {
         CommunityPost post = postRepository.findById(postId)
                 .orElseThrow(() -> new ResourceNotFoundException("Post not found"));
         Comment comment = new Comment();
@@ -102,26 +161,49 @@ public class CommunityPostService {
     }
 
     /**
-     * Creates a new post.
+     * Retrieves the comments for a given post.
      *
-     * @param request the request object containing post details
-     * @param user the user creating the post
-     * @return the created post
+     * @param post the post for which to retrieve comments
+     * @return a list of comments for the post
      */
-    @Transactional
-    public CommunityPost createPost(
-          CreateCommunityPostRequestDto request,
-          User user
-    ){
-        CommunityPost post = communityPostMapper.toEntity(request);
-
-        post.setUser(user);
-        post.setCreatedAt(LocalDateTime.now());
-        post.setPostType(request.getPostType().name());
-        post.setLikesCount(0);
-        post.setCommentsCount(0);
-        post.setViewsCount(0);
-        post.setCategories(categoryService.getCategoriesBySlugs(request.getCategorySlugs()));
-        return postRepository.save(post);
+    @Transactional(readOnly = true)
+    public List<Comment> getComments(CommunityPost post) {
+        return commentRepository.findByPostOrderByCreatedAtAsc(post);
     }
+
+    public void deleteComment(
+            Long commentId,
+            User user
+    ) {
+        Comment comment = commentRepository.findById(commentId).
+                orElseThrow(() -> new ResourceNotFoundException("Comment not found"));
+        boolean isPostOwner = comment.getPost().getUser().getId().equals(user.getId());
+        boolean isCommentOwner = comment.getUser().getId().equals(user.getId());
+
+        if (!isPostOwner && !isCommentOwner) {
+            throw new RuntimeException("You are not authorized to delete this comment");
+        }
+
+        CommunityPost post = comment.getPost();
+        commentRepository.delete(comment);
+        post.setCommentsCount(post.getCommentsCount() - 1);
+    }
+
+    @Transactional
+    public Comment updateComment(
+            Long commentId,
+            String content,
+            User user
+    ) {
+        Comment comment = commentRepository.findById(commentId).
+                orElseThrow(() -> new ResourceNotFoundException("Comment not found"));
+        if (!comment.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("You are not authorized to update this comment");
+        }
+        comment.setContent(content);
+        return comment;
+
+    }
+
 }
+
