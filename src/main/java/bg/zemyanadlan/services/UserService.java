@@ -1,17 +1,31 @@
 package bg.zemyanadlan.services;
 
-import bg.zemyanadlan.entities.User;
+import bg.zemyanadlan.repositories.UserRepository;
+import lombok.AllArgsConstructor;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+
+@AllArgsConstructor
 @Service
-public class UserService {
-    public User getCurrentUser(){
-        // TO DO: Implement actual user retrieval logic based on your security setup
-        // In a real application, this would fetch the authenticated user from the security context
-        // For this example, we'll return a dummy user
-        User user = new User();
-        user.setId(1L);
-        user.setUsername("testuser");
-        return user;
+public class UserService implements UserDetailsService {
+
+    private final UserRepository userRepository;
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        var user = userRepository.findByEmail(email)
+                .orElseThrow(
+                        () -> new UsernameNotFoundException("User not found with email: " + email));
+
+        return new User(
+                user.getEmail(),
+                user.getPassword(),
+                Collections.emptyList()
+        );
     }
 }
