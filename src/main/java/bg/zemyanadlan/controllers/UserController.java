@@ -5,6 +5,7 @@ import bg.zemyanadlan.dtos.ChangePasswordRequest;
 import bg.zemyanadlan.dtos.RegisterUserRequest;
 import bg.zemyanadlan.dtos.UpdateUserRequest;
 import bg.zemyanadlan.dtos.UserDto;
+import bg.zemyanadlan.entities.Role;
 import bg.zemyanadlan.mappers.UserMapper;
 import bg.zemyanadlan.repositories.UserRepository;
 import jakarta.validation.Valid;
@@ -58,6 +59,7 @@ public class UserController {
 
         var user = userMapper.toEntity(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole(Role.USER);
         userRepository.save(user);
         var userDto = userMapper.toDto(user);
         var location = uriBuilder.path("/users/{id}").buildAndExpand(user.getId()).toUri();

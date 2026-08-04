@@ -1,8 +1,12 @@
 package bg.zemyanadlan.config;
 
+import bg.zemyanadlan.entities.Role;
+import bg.zemyanadlan.filters.JwtAuthenticationFilter;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -14,7 +18,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
@@ -22,6 +30,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @AllArgsConstructor
 public class SecurityConfig {
     private final UserDetailsService userDetailsService;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -51,14 +60,25 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         auth -> auth
-                                .requestMatchers("/auth/**").permitAll()
-                                .requestMatchers("/posts/**").permitAll()
-                                .requestMatchers("/comments/**").permitAll()
+                                .requestMatchers("/auth/login").permitAll()
+                                .requestMatchers("/auth/refresh").permitAll()
                                 .requestMatchers("/users/**").permitAll()
-                                .requestMatchers("/communities/**").permitAll()
-                                .requestMatchers("/notifications/**").permitAll()
+                                .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
                                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                                .anyRequest().authenticated());
+                                .anyRequest().authenticated()
+                )
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(
+                        exception -> {
+                            exception
+                                    .authenticationEntryPoint(
+                                            new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
+                            exception
+                                    .accessDeniedHandler(
+                                            (request, response, accessDeniedException) -> {
+                                                response.setStatus(HttpStatus.FORBIDDEN.value());
+                                            });
+                        });
 
         return http.build();
     }

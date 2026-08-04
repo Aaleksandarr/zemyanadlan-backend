@@ -1,43 +1,58 @@
 package bg.zemyanadlan.services;
 
+import bg.zemyanadlan.config.JwtConfig;
+import bg.zemyanadlan.entities.Role;
+import bg.zemyanadlan.entities.User;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
+@AllArgsConstructor
 @Service
 public class JwtService {
-    @Value("${jwt.secret}")
-    private String secret;
+    private final JwtConfig jwtConfig;
 
-    public String generateToken(String email){
-        final long tokenExpiration = 86400; //1 day
+    public Jwt generateAccessToken(User user){
 
-        return Jwts.builder()
-                .subject(email)
-                .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 1000 * tokenExpiration))
-                .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
-                .compact();
+        return generateToken(user, jwtConfig.getAccessTokenExpiration());
     }
 
-    public boolean validateToken(String token){
+    public Jwt generateRefreshToken(User user){
 
-        try {
-            var claims = Jwts.parser()
-                    .verifyWith(Keys.hmacShaKeyFor(secret.getBytes()))
-                    .build()
-                    .parseSignedClaims(token)
-                    .getPayload();
-            return claims.getExpiration().after(new Date());
+        return generateToken(user, jwtConfig.getRefreshTokenExpiration());
+    }
 
-        } catch (JwtException e) {
-            return false;
+
+    private Jwt generateToken(User user, long tokenExpiration) {
+        var claims = Jwts.claims()
+                .subject(user.getId().toString())
+                .add("email", user.getEmail())
+                .add("name", user.getUsername())
+                .add("role", user.getRole().name())
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + 1000 * tokenExpiration))
+                .build();
+
+        return new Jwt(claims, jwtConfig.getSecretKey());
+    }
+
+    public Jwt parseToken(String token){
+        try{
+            var claims = getClaims(token);
+            return new Jwt(claims, jwtConfig.getSecretKey());
+        } catch (JwtException e){
+            return null;
         }
+    }
 
+    private Claims getClaims(String token) {
+        return Jwts.parser()
+                .verifyWith(jwtConfig.getSecretKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 }

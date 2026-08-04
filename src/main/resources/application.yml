@@ -5,5 +5,7 @@ spring:
   profiles:
     active: local
 
-jwt:
-  secret: ${JWT_SECRET}
+  jwt:
+    secret: ${JWT_SECRET}
+    accessTokenExpiration: 900 #change to 300 - 5m
+    refreshTokenExpiration: 604800 #7d
