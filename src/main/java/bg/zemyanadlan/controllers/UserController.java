@@ -1,6 +1,5 @@
 package bg.zemyanadlan.controllers;
 
-
 import bg.zemyanadlan.dtos.ChangePasswordRequest;
 import bg.zemyanadlan.dtos.RegisterUserRequest;
 import bg.zemyanadlan.dtos.UpdateUserRequest;
@@ -13,6 +12,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -28,6 +28,7 @@ public class UserController {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public List<UserDto> getAllUsers(
             @RequestParam(required = false, defaultValue = "", name = "sort") String sort
@@ -38,6 +39,7 @@ public class UserController {
                 .toList();
     }
 
+    @PreAuthorize("hasRole('ADMIN') or #id == authentication.principal")
     @GetMapping ("/{id}")
     public ResponseEntity<UserDto> getUser(@PathVariable Long id ) {
         var user = userRepository.findById(id).orElse(null);
@@ -66,6 +68,7 @@ public class UserController {
         return ResponseEntity.created(location).body(userDto);
     }
 
+    @PreAuthorize("hasRole('ADMIN') or #id == authentication.principal")
     @PutMapping("/{id}")
     public ResponseEntity<UserDto> updateUser(
             @PathVariable(name = "id") Long id,
@@ -79,6 +82,7 @@ public class UserController {
         return ResponseEntity.ok(userMapper.toDto(user));
     }
 
+    @PreAuthorize("hasRole('ADMIN') or #id == authentication.principal")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         var user = userRepository.findById(id).orElse(null);
@@ -89,6 +93,7 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("#id == authentication.principal")
     @PostMapping("/{id}/change-password")
     public ResponseEntity<UserDto> changePassword(
             @PathVariable Long id,
@@ -104,15 +109,4 @@ public class UserController {
         userRepository.save(user);
         return ResponseEntity.noContent().build();
     }
-
-//    @ExceptionHandler(MethodArgumentNotValidException.class)
-//    public ResponseEntity<Map<String, String>> handleValidationErrors(
-//            MethodArgumentNotValidException exception
-//    ){
-//        var errors = new HashMap<String, String>();
-//        exception.getBindingResult().getFieldErrors()
-//                .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
-//        return ResponseEntity.badRequest().body(errors);
-//    }
-
 }
