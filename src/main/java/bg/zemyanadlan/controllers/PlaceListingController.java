@@ -27,7 +27,6 @@ public class PlaceListingController {
     private final PlaceListingService placeListingService;
     private final PlaceListingMapper placeListingMapper;
     private final UserService userService;
-    private final UserRepository userRepository;
 
     @Operation(summary = "Create a new place")
     @PostMapping
@@ -35,8 +34,7 @@ public class PlaceListingController {
     public PlaceListingResponseDto createPlaceListing(
             @Valid @RequestBody CreatePlaceListingRequestDto request
             ) {
-        User currentUser = userRepository.findTopByOrderByIdAsc()
-                .orElseThrow(() -> new RuntimeException("No users found in the database"));;
+        User currentUser = userService.getCurrentUser();
         PlaceListing listing = placeListingMapper.toEntity(request);
         PlaceListing savedPlace = placeListingService.createPlaceListing(
                 listing,

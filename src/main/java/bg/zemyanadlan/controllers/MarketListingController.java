@@ -29,7 +29,6 @@ public class MarketListingController {
     private final MarketListingService marketListingService;
     private final MarketListingMapper marketListingMapper;
     private final UserService userService;
-    private final UserRepository userRepository;
 
     @Operation(summary = "Create a new market product")
     @PostMapping
@@ -37,8 +36,7 @@ public class MarketListingController {
     public MarketListingResponseDto createMarketListing(
             @Valid @RequestBody CreateMarketListingRequestDto request
     ){
-        User currentUser = userRepository.findTopByOrderByIdAsc()
-                .orElseThrow(() -> new RuntimeException("No users found in the database"));;
+        User currentUser = userService.getCurrentUser();
         MarketListing listing = marketListingMapper.toEntity(request);
         MarketListing savedListing = marketListingService.createMarketListing(
                 listing,

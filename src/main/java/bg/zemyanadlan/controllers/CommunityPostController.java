@@ -37,8 +37,6 @@ public class CommunityPostController {
     private final CommunityPostMapper communityPostMapper;
     private final CommentMapper commentMapper;
     private final UserService userService;
-    private final UserRepository userRepository;
-
 
     /**
      * Retrieves the community feed with optional filtering by post type.
@@ -94,9 +92,8 @@ public class CommunityPostController {
     public CommunityPostFeedDto createPost(
             @Valid @RequestBody CreateCommunityPostRequestDto request
     ){
-        User user = userRepository.findTopByOrderByIdAsc()
-                .orElseThrow(() -> new RuntimeException("No users found in the database"));
-        CommunityPost post = communityPostService.createPost(request, user);
+        User currentUser = userService.getCurrentUser();
+        CommunityPost post = communityPostService.createPost(request, currentUser);
         return communityPostMapper.toFeedDto(post);
     }
 
@@ -110,9 +107,8 @@ public class CommunityPostController {
             @PathVariable Long id,
             @Valid @RequestBody UpdateCommunityPostRequestDto request
     ){
-        User user = userRepository.findTopByOrderByIdAsc()
-                .orElseThrow(() -> new RuntimeException("No users found in the database"));;
-        CommunityPost updatedPost = communityPostService.updatePost(id, request, user);
+        User currentUser = userService.getCurrentUser();
+        CommunityPost updatedPost = communityPostService.updatePost(id, request, currentUser);
         return communityPostMapper.toFeedDto(updatedPost);
     }
 
@@ -127,9 +123,8 @@ public class CommunityPostController {
             @Parameter(description = "Post ID")
             @PathVariable Long id
     ){
-        User user = userRepository.findTopByOrderByIdAsc()
-                .orElseThrow(() -> new RuntimeException("No users found in the database"));;
-        communityPostService.deletePost(id, user);
+        User currentUser = userService.getCurrentUser();
+        communityPostService.deletePost(id, currentUser);
     }
 
 
@@ -149,12 +144,11 @@ public class CommunityPostController {
             @PathVariable Long id,
             @Valid @RequestBody CreateCommentRequestDto request
     ){
-        User user = userRepository.findTopByOrderByIdAsc()
-                .orElseThrow(() -> new RuntimeException("No users found in the database"));;
+        User currentUser = userService.getCurrentUser();;
         Comment comment = communityPostService.addComment(
                 id,
                 request.getContent(),
-                user
+                currentUser
         );
         return commentMapper.toDto(comment);
     }
@@ -169,9 +163,8 @@ public class CommunityPostController {
             @Parameter(description = "Comment ID")
             @PathVariable Long Id
     ){
-        User user = userRepository.findTopByOrderByIdAsc()
-                .orElseThrow(() -> new RuntimeException("No users found in the database"));
-        communityPostService.deleteComment(Id, user);
+        User currentUser = userService.getCurrentUser();
+        communityPostService.deleteComment(Id, currentUser);
     }
 
     @Operation(
@@ -183,9 +176,8 @@ public class CommunityPostController {
             @PathVariable Long id,
             @Valid @RequestBody UpdateCommentRequestDto request
     ) {
-        User user = userRepository.findTopByOrderByIdAsc()
-                .orElseThrow(() -> new RuntimeException("No users found in the database"));
-        Comment comment = communityPostService.updateComment(id, request.getContent(), user);
+        User currentUser = userService.getCurrentUser();
+        Comment comment = communityPostService.updateComment(id, request.getContent(), currentUser);
         return commentMapper.toDto(comment);
     }
 }

@@ -1,7 +1,9 @@
 package bg.zemyanadlan.services;
 
+import bg.zemyanadlan.exceptions.ResourceNotFoundException;
 import bg.zemyanadlan.repositories.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -27,5 +29,12 @@ public class UserService implements UserDetailsService {
                 user.getPassword(),
                 Collections.emptyList()
         );
+    }
+
+    public bg.zemyanadlan.entities.User getCurrentUser() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var userId = (Long) authentication.getPrincipal();
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Authenticated user not found"));
     }
 }

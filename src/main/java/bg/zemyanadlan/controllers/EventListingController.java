@@ -27,8 +27,6 @@ public class EventListingController {
     private final EventListingService eventListingService;
     private final EventListingMapper eventListingMapper;
     private final UserService userService;
-    private final UserRepository userRepository;
-
 
     @Operation(summary = "Create a new event")
     @PostMapping
@@ -36,8 +34,7 @@ public class EventListingController {
     public EventListingResponseDto create(
             @Valid @RequestBody CreateEventListingRequestDto request
     ) {
-        User currentUser = userRepository.findTopByOrderByIdAsc()
-                .orElseThrow(() -> new RuntimeException("No users found in the database"));;
+        User currentUser = userService.getCurrentUser();
         EventListing listing = eventListingMapper.toEntity(request);
         EventListing saveListing = eventListingService.createEventListing(
                 listing,
