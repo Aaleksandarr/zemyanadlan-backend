@@ -4,6 +4,7 @@ import bg.zemyanadlan.dtos.CreateCommunityPostRequestDto;
 import bg.zemyanadlan.dtos.UpdateCommentRequestDto;
 import bg.zemyanadlan.dtos.UpdateCommunityPostRequestDto;
 import bg.zemyanadlan.entities.*;
+import bg.zemyanadlan.exceptions.ForbiddenException;
 import bg.zemyanadlan.exceptions.ResourceNotFoundException;
 import bg.zemyanadlan.mappers.CommunityPostMapper;
 import bg.zemyanadlan.repositories.CommentRepository;
@@ -98,7 +99,7 @@ public class CommunityPostService {
                 .orElseThrow(() -> new ResourceNotFoundException("Post not found"));
 
         if (!post.getUser().getId().equals(user.getId())) {
-            throw new RuntimeException("You are not authorized to update this post");
+            throw new ForbiddenException("You are not authorized to update this post");
         }
 
         if (request.getTitle() != null) {
@@ -126,7 +127,7 @@ public class CommunityPostService {
                 .orElseThrow(() -> new ResourceNotFoundException("Post not found"));
 
         if (!post.getUser().getId().equals(user.getId())) {
-            throw new RuntimeException("You are not authorized to delete this post");
+            throw new ForbiddenException("You are not authorized to delete this post");
         }
 
         postRepository.delete(post);
@@ -181,7 +182,7 @@ public class CommunityPostService {
         boolean isCommentOwner = comment.getUser().getId().equals(user.getId());
 
         if (!isPostOwner && !isCommentOwner) {
-            throw new RuntimeException("You are not authorized to delete this comment");
+            throw new ForbiddenException("You are not authorized to delete this comment");
         }
 
         CommunityPost post = comment.getPost();
@@ -198,7 +199,7 @@ public class CommunityPostService {
         Comment comment = commentRepository.findById(commentId).
                 orElseThrow(() -> new ResourceNotFoundException("Comment not found"));
         if (!comment.getUser().getId().equals(user.getId())) {
-            throw new RuntimeException("You are not authorized to update this comment");
+            throw new ForbiddenException("You are not authorized to update this comment");
         }
         comment.setContent(content);
         return comment;
