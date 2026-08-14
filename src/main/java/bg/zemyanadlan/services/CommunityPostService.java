@@ -172,6 +172,7 @@ public class CommunityPostService {
         return commentRepository.findByPostOrderByCreatedAtAsc(post);
     }
 
+    @Transactional
     public void deleteComment(
             Long commentId,
             User user
